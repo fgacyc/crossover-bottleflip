@@ -1,17 +1,22 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
+// Hardcoded for debugging
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_API_KEY,
-  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_APP_ID,
+  apiKey: "AIzaSyCQHkcIIc1eUicMXTcVZuDOSTXey2RfVRU",
+  authDomain: "crossover-bottleflip.firebaseapp.com",
+  projectId: "crossover-bottleflip",
+  storageBucket: "crossover-bottleflip.firebasestorage.app",
+  messagingSenderId: "765583122408",
+  appId: "1:765583122408:web:5dcc45948a359d68f2ce5d",
 };
 
-console.log(firebaseConfig);
+console.log("Firebase Config Init:", {
+  projectId: firebaseConfig.projectId,
+  hasApiKey: !!firebaseConfig.apiKey,
+});
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
+// Standard initialization - easiest for debugging
 export const firestore = getFirestore(app);

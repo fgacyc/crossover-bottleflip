@@ -7,6 +7,7 @@ import {
   getDoc,
   collection,
   getDocs,
+  addDoc,
 } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -26,33 +27,35 @@ export default function CounterControl({ counterId }: CounterControlProps) {
 
   // Debug state
   const [debugInfo, setDebugInfo] = useState<any>(null);
+  const [writeStatus, setWriteStatus] = useState<string>("");
+
+  const checkDb = async () => {
+    try {
+      // 1. Check specific document
+      const docSnap = await getDoc(counterRef);
+
+      // 2. Check collection
+      const collRef = collection(firestore, "counters");
+      const collSnap = await getDocs(collRef);
+      const allDocs = collSnap.docs.map((d) => ({
+        id: d.id,
+        data: d.data(),
+      }));
+
+      setDebugInfo({
+        exists: docSnap.exists(),
+        id: counterId,
+        rawData: docSnap.data(),
+        collectionSize: collSnap.size,
+        allDocuments: allDocs,
+        error: null,
+      });
+    } catch (err: any) {
+      setDebugInfo({ error: err.message, code: err.code });
+    }
+  };
 
   useEffect(() => {
-    const checkDb = async () => {
-      try {
-        // 1. Check specific document
-        const docSnap = await getDoc(counterRef);
-
-        // 2. Check collection
-        const collRef = collection(firestore, "counters");
-        const collSnap = await getDocs(collRef);
-        const allDocs = collSnap.docs.map((d) => ({
-          id: d.id,
-          data: d.data(),
-        }));
-
-        setDebugInfo({
-          exists: docSnap.exists(),
-          id: counterId,
-          rawData: docSnap.data(),
-          collectionSize: collSnap.size,
-          allDocuments: allDocs,
-          error: null,
-        });
-      } catch (err: any) {
-        setDebugInfo({ error: err.message, code: err.code });
-      }
-    };
     checkDb();
   }, [counterId, firestore]);
 
@@ -81,6 +84,21 @@ export default function CounterControl({ counterId }: CounterControlProps) {
 
   const resetCounter = async () => {
     await setDoc(counterRef, { value: 0 });
+  };
+
+  const debugWrite = async () => {
+    setWriteStatus("Attempting write...");
+    try {
+      const testRef = await addDoc(collection(firestore, "debug_tests"), {
+        timestamp: new Date().toISOString(),
+        device: navigator.userAgent,
+        test: "If you see this, WRITES are working!",
+      });
+      setWriteStatus(`✅ Written to 'debug_tests/${testRef.id}'`);
+      checkDb(); // Refresh debug info
+    } catch (e: any) {
+      setWriteStatus(`❌ Write Failed: ${e.message}`);
+    }
   };
 
   const getCounterColor = () => {
@@ -169,6 +187,22 @@ export default function CounterControl({ counterId }: CounterControlProps) {
         {/* Debug Section */}
         <div className="mt-8 p-4 bg-black/50 rounded-xl text-xs font-mono text-gray-300 overflow-auto max-h-60">
           <h3 className="text-white font-bold mb-2">🔍 Debug Info</h3>
+          <div className="mb-4">
+            <button 
+              onClick={checkDb}
+              className="mr-2 px-2 py-1 bg-slate-700 hover:bg-slate-600 rounded"
+            >
+              🔄 Refresh Data
+            </button>
+            <button 
+              onClick={debugWrite}
+              className="px-2 py-1 bg-blue-700 hover:bg-blue-600 rounded"
+            >
+              ✍️ Test Write
+            </button>
+            <span className="ml-2 text-yellow-400">{writeStatus}</span>
+          </div>
+          
           {debugInfo ? (
             <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
           ) : (
