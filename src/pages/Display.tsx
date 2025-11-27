@@ -19,7 +19,7 @@ function CounterDisplay({ counterId, color, icon }: CounterDisplayProps) {
   return (
     <Link
       to={`/control/${counterId}`}
-      className={`bg-gradient-to-br ${color} rounded-2xl shadow-2xl p-8 text-white transform hover:scale-105 transition-all cursor-pointer`}
+      className={`bg-linear-to-br ${color} rounded-2xl shadow-2xl p-8 text-white transform hover:scale-105 transition-all cursor-pointer`}
     >
       <div className="text-center">
         <div className="text-5xl mb-4">{icon}</div>
@@ -45,7 +45,7 @@ export default function Display() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-8">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-blue-950 to-slate-900 p-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-6xl font-bold text-white mb-4">
