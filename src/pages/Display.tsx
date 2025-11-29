@@ -76,7 +76,9 @@ function CounterDisplay({ counterId, rank }: CounterDisplayProps) {
             alt={counterId}
             src={`/${counterId}.png`}
           />
-          <h2 className="text-2xl font-bold capitalize">{counterId}</h2>
+          <h2 className="text-2xl block lg:hidden font-bold capitalize">
+            {counterId}
+          </h2>
         </div>
 
         <div className="bg-white/20 backdrop-blur-sm rounded-xl px-8 py-4 min-w-[80px] flex items-center justify-center">
@@ -158,17 +160,19 @@ export default function Display() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-900 via-blue-950 to-slate-900 p-4 sm:p-8">
-      <div className="max-w-2xl mx-auto space-y-4">
-        <h1 className="text-3xl sm:text-4xl font-bold text-white text-center mb-8">
-          Counter Leaderboard
+      <div className="max-w-2xl lg:max-w-4xl lg:mt-4 mx-auto space-y-4">
+        <h1 className="text-3xl sm:text-4xl lg:text-[100px] font-bold text-white text-center mb-8">
+          Cluster Bottleflip
         </h1>
-        {sortedCounters.map((counter) => (
-          <CounterDisplay
-            key={counter.id}
-            counterId={counter.id}
-            rank={rankings[counter.id]}
-          />
-        ))}
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 scale-100 lg:scale-[200%] lg:mt-[220px]">
+          {sortedCounters.map((counter) => (
+            <CounterDisplay
+              key={counter.id}
+              counterId={counter.id}
+              rank={rankings[counter.id]}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
