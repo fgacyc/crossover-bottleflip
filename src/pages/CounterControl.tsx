@@ -1,6 +1,12 @@
 import { useFirestore, useFirestoreDocData } from "reactfire";
 import { doc, setDoc, updateDoc, increment } from "firebase/firestore";
-import { Link } from "react-router-dom";
+
+import { TiMinus, TiPlus } from "react-icons/ti";
+import {
+  getButtonColor,
+  getCounterColor,
+  getCounterColorLight,
+} from "../utils";
 
 interface CounterControlProps {
   counterId: "voice" | "move" | "mind" | "heart";
@@ -27,6 +33,7 @@ export default function CounterControl({ counterId }: CounterControlProps) {
   };
 
   const decrementCounter = async () => {
+    if (data?.value === 0) return;
     try {
       await updateDoc(counterRef, {
         value: increment(-1),
@@ -36,105 +43,46 @@ export default function CounterControl({ counterId }: CounterControlProps) {
     }
   };
 
-  const resetCounter = async () => {
-    await setDoc(counterRef, { value: 0 });
-  };
-
-  const getCounterColor = () => {
-    switch (counterId) {
-      case "voice":
-        return "from-blue-600 to-blue-800";
-      case "move":
-        return "from-green-600 to-green-800";
-      case "mind":
-        return "from-purple-600 to-purple-800";
-      case "heart":
-        return "from-red-600 to-red-800";
-    }
-  };
-
-  const getCounterIcon = () => {
-    switch (counterId) {
-      case "voice":
-        return "🔊";
-      case "move":
-        return "🏃";
-      case "mind":
-        return "🧠";
-      case "heart":
-        return "❤️";
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-blue-950 to-slate-900 flex flex-col items-center justify-center p-8">
-      <div className="w-full max-w-2xl">
-        <Link
-          to="/display"
-          className="inline-block mb-8 text-blue-300 hover:text-blue-200 transition-colors"
-        >
-          ← Back to Display
-        </Link>
-
+  return status === "success" ? (
+    <div
+      className={`min-h-screen bg-linear-to-br ${getCounterColor(
+        counterId
+      )} flex flex-col items-center justify-center p-12`}
+    >
+      <div className="rounded-xl bg-white py-1 px-2 max-w-2xl w-full gap-1 flex flex-col">
+        <p className="text-center text-2xl font-bold">
+          {counterId.toUpperCase()}
+        </p>
         <div
-          className={`bg-linear-to-br ${getCounterColor()} rounded-2xl shadow-2xl p-12 text-white`}
+          className={`${getCounterColorLight(
+            counterId
+          )} bg-linear-to-br rounded-t-xl py-1 px-2`}
         >
-          <div className="text-center mb-8">
-            <div className="text-6xl mb-4">{getCounterIcon()}</div>
-            <h1 className="text-5xl font-bold capitalize mb-2">{counterId}</h1>
-            <p className="text-xl opacity-90">Counter Controls</p>
-          </div>
-
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 mb-8">
-            {status === "loading" ? (
-              <div className="text-center text-8xl font-bold animate-pulse">
-                ...
-              </div>
-            ) : (
-              <div className="text-center text-9xl font-bold">
-                {data?.value ?? 0}
-              </div>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <button
-              onClick={incrementCounter}
-              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl p-6 text-2xl font-semibold transition-all transform hover:scale-105 active:scale-95"
-            >
-              ➕ Count Up
-            </button>
-            <button
-              onClick={decrementCounter}
-              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl p-6 text-2xl font-semibold transition-all transform hover:scale-105 active:scale-95"
-            >
-              ➖ Count Down
-            </button>
-          </div>
-
-          <button
-            onClick={resetCounter}
-            className="w-full bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl p-4 text-lg font-semibold transition-all transform hover:scale-105 active:scale-95"
-          >
-            🔄 Reset Counter
-          </button>
+          <p className="text-center text-[100px] font-bold">
+            {data?.value ?? 0}
+          </p>
         </div>
-
-        <div className="mt-8 flex justify-center gap-4">
-          {(["voice", "move", "mind", "heart"] as const).map(
-            (id) =>
-              id !== counterId && (
-                <Link
-                  key={id}
-                  to={`/control/${id}`}
-                  className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors capitalize"
-                >
-                  {id}
-                </Link>
-              )
-          )}
+        <div className="flex flex-row items-center w-full gap-0.5 pb-1">
+          <button
+            onClick={decrementCounter}
+            className={`${getButtonColor(
+              counterId
+            )} flex flex-row justify-center w-full px-4 py-2 rounded-bl-md`}
+          >
+            <TiMinus color="white" size={40} />
+          </button>
+          <button
+            onClick={incrementCounter}
+            className={`${getButtonColor(
+              counterId
+            )} flex flex-row justify-center w-full px-4 py-2 rounded-br-md`}
+          >
+            <TiPlus color="white" size={40} />
+          </button>
         </div>
       </div>
     </div>
+  ) : (
+    <>Loading...</>
   );
 }
