@@ -62,7 +62,7 @@ function CounterDisplay({ counterId, rank }: CounterDisplayProps) {
       <div
         className={`bg-linear-to-br min-w-[714px] min-h-[530px] max-w-[714px] max-h-[530px] ${getCounterColor(
           counterId
-        )} rounded-md shadow-2xl flex flex-row items-center justify-center text-white w-full transition-all duration-300 ${getRankGlow()}`}
+        )} rounded-4xl shadow-2xl flex flex-row items-center justify-center text-white w-full transition-all duration-300 ${getRankGlow()}`}
       >
         <div className="flex h-full flex-row items-center gap-4 justify-center">
           <img
