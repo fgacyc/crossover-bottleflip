@@ -21,13 +21,13 @@ function CounterDisplay({ counterId, rank }: CounterDisplayProps) {
 
     switch (rank) {
       case 1:
-        return "ring-4 ring-yellow-400 shadow-[0_0_30px_rgba(250,204,21,0.8)]";
+        return "ring-4 ring-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.8)]";
       case 2:
-        return "ring-4 ring-gray-300 shadow-[0_0_25px_rgba(209,213,219,0.7)] ";
+        return "ring-4 ring-gray-300 shadow-[0_0_15px_rgba(209,213,219,0.7)]";
       case 3:
-        return "ring-4 ring-orange-600 shadow-[0_0_20px_rgba(234,88,12,0.6)]";
+        return "ring-4 ring-orange-600 shadow-[0_0_15px_rgba(234,88,12,0.6)]";
       case 4:
-        return "ring-4 ring-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.6)]";
+        return "ring-4 ring-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.6)]";
       default:
         return "";
     }
@@ -48,7 +48,7 @@ function CounterDisplay({ counterId, rank }: CounterDisplayProps) {
 
     return (
       <div
-        className={`absolute -top-8 left-1/2 -translate-x-1/2 ${badge.color} px-10 py-1 rounded-full text-center font-bold text-[40px] shadow-lg z-10`}
+        className={`absolute -top-0 left-1/2 -translate-x-1/2 ${badge.color} px-6 py-1 rounded-full text-center font-bold text-sm shadow-lg z-10`}
       >
         {badge.text}
       </div>
@@ -56,17 +56,17 @@ function CounterDisplay({ counterId, rank }: CounterDisplayProps) {
   };
 
   return (
-    <div className="relative">
+    <div className="relative pt-4">
       {getRankBadge()}
 
       <div
-        className={`bg-linear-to-br min-w-[714px] min-h-[530px] max-w-[714px] max-h-[530px] ${getCounterColor(
+        className={`bg-linear-to-br ${getCounterColor(
           counterId
-        )} rounded-4xl shadow-2xl flex flex-row items-center justify-center text-white w-full transition-all duration-300 ${getRankGlow()}`}
+        )} rounded-2xl shadow-2xl flex flex-row items-center justify-between p-6 text-white transition-all duration-300 ${getRankGlow()}`}
       >
-        <div className="flex h-full flex-row items-center gap-4 justify-center">
+        <div className="flex flex-row items-center gap-4">
           <img
-            className={`mb-4 object-cover w-[390px] h-[390px] ${
+            className={`object-cover w-[120px] h-[120px] ${
               counterId === "mind"
                 ? "scale-[0.93]"
                 : counterId === "move"
@@ -76,13 +76,15 @@ function CounterDisplay({ counterId, rank }: CounterDisplayProps) {
             alt={counterId}
             src={`/${counterId}.png`}
           />
-          <div className="bg-white/10 w-[250px] flex flex-row items-center justify-center mx-auto backdrop-blur-sm rounded-xl p-6">
-            {status === "loading" ? (
-              <div className="text-6xl font-bold animate-pulse">...</div>
-            ) : (
-              <div className="text-[200px] font-bold">{data?.value ?? 0}</div>
-            )}
-          </div>
+          <h2 className="text-2xl font-bold capitalize">{counterId}</h2>
+        </div>
+
+        <div className="bg-white/20 backdrop-blur-sm rounded-xl px-8 py-4 min-w-[80px] flex items-center justify-center">
+          {status === "loading" ? (
+            <div className="text-3xl font-bold animate-pulse">...</div>
+          ) : (
+            <div className="text-4xl font-bold">{data?.value ?? 0}</div>
+          )}
         </div>
       </div>
     </div>
@@ -91,7 +93,7 @@ function CounterDisplay({ counterId, rank }: CounterDisplayProps) {
 
 export default function Display() {
   const firestore = useFirestore();
-  const [rankedCounters, setRankedCounters] = useState<string[]>([]);
+  const [rankings, setRankings] = useState<Record<string, number>>({});
 
   const counters = [
     { id: "mind" as const },
@@ -106,24 +108,34 @@ export default function Display() {
         const countersRef = collection(firestore, "counters");
         const snapshot = await getDocs(countersRef);
 
-        const newRankedCounters = [...rankedCounters];
+        // Get all counters with their values
+        const counterValues = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          value: doc.data().value || 0,
+        }));
 
-        snapshot.docs.forEach((doc) => {
-          const value = doc.data().value;
-          const counterId = doc.id;
-          const isInArray = newRankedCounters.includes(counterId);
+        // Sort by value (highest first)
+        counterValues.sort((a, b) => b.value - a.value);
 
-          if (value >= 7 && !isInArray) {
-            // Counter reached 7 and not yet in array - add it
-            newRankedCounters.push(counterId);
-          } else if (value < 7 && isInArray) {
-            // Counter dropped below 7 - remove from array
-            const index = newRankedCounters.indexOf(counterId);
-            newRankedCounters.splice(index, 1);
+        // Assign ranks (handle ties by giving same rank)
+        const newRankings: Record<string, number> = {};
+        let currentRank = 1;
+
+        counterValues.forEach((counter, index) => {
+          // If value is 0, don't assign a rank
+          if (counter.value === 0) return;
+
+          // Check if current value is same as previous (tie)
+          if (index > 0 && counter.value === counterValues[index - 1].value) {
+            // Same rank as previous
+            newRankings[counter.id] = currentRank - 1;
+          } else {
+            newRankings[counter.id] = currentRank;
           }
+          currentRank++;
         });
 
-        setRankedCounters(newRankedCounters);
+        setRankings(newRankings);
       } catch (error) {
         console.error("Error updating rankings:", error);
       }
@@ -135,23 +147,28 @@ export default function Display() {
     const interval = setInterval(updateRankings, 2000);
 
     return () => clearInterval(interval);
-  }, [firestore, rankedCounters]);
+  }, [firestore]);
+
+  // Sort counters by ranking (1st place at top)
+  const sortedCounters = [...counters].sort((a, b) => {
+    const rankA = rankings[a.id] || 999; // Unranked go to bottom
+    const rankB = rankings[b.id] || 999;
+    return rankA - rankB;
+  });
 
   return (
-    <div className="min-w-[4000px] min-h-[1000px] bg-[url('/L5_BG.jpg')] bg-cover bg-center p-8">
-      <div className="flex mt-[200px] flex-row items-center max-w-[3000px] mx-auto w-full justify-center gap-12">
-        {counters.map((counter) => {
-          const rankIndex = rankedCounters.indexOf(counter.id);
-          const rank = rankIndex >= 0 ? rankIndex + 1 : undefined;
-
-          return (
-            <CounterDisplay
-              key={counter.id}
-              counterId={counter.id}
-              rank={rank}
-            />
-          );
-        })}
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-blue-950 to-slate-900 p-4 sm:p-8">
+      <div className="max-w-2xl mx-auto space-y-4">
+        <h1 className="text-3xl sm:text-4xl font-bold text-white text-center mb-8">
+          Counter Leaderboard
+        </h1>
+        {sortedCounters.map((counter) => (
+          <CounterDisplay
+            key={counter.id}
+            counterId={counter.id}
+            rank={rankings[counter.id]}
+          />
+        ))}
       </div>
     </div>
   );
