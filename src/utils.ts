@@ -1,15 +1,21 @@
-export type CounterId = "voice" | "move" | "mind" | "heart";
+export type Cluster = "voice" | "move" | "mind" | "heart";
+
+export type CounterId = Cluster | "heart,move" | "heart,voice";
 
 export const getCounterColor = (counterId: CounterId) => {
   switch (counterId) {
+    case "heart,move":
+      return "from-red-700 to-green-700";
+    case "heart,voice":
+      return "from-red-700 to-yellow-700";
     case "voice":
-      return "from-yellow-950 via-yellow-800 to-yellow-950";
+      return "from-yellow-700 via-yellow-800 to-yellow-700";
     case "move":
-      return "from-green-950 via-green-800 to-green-950";
+      return "from-green-700 via-green-800 to-green-700";
     case "mind":
-      return "from-blue-950 via-blue-800 to-blue-950";
+      return "from-blue-700 via-blue-800 to-blue-700";
     case "heart":
-      return "from-red-950 via-red-800 to-red-950";
+      return "from-red-700 via-red-800 to-red-700";
   }
 };
 
