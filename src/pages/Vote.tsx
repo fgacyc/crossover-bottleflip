@@ -127,39 +127,42 @@ export default function Vote() {
         )}
         {status === "success" && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {participants.map((participant) => (
-              <button
-                key={participant.id}
-                onClick={() => handleSelectParticipant(participant.id)}
-                className={`${
-                  selectedParticipant.includes(participant.id)
-                    ? "border-green-600"
-                    : "border-white"
-                } bg-linear-to-br border from-slate-800 via-slate-900 to-slate-800 relative rounded-2xl shadow-2xl p-6 text-white transition-all duration-200 transform hover:scale-105 active:scale-95`}
-              >
-                {selectedParticipant
-                  .sort((a, b) => a.localeCompare(b))
-                  .includes(participant.id) && (
-                  <div className="w-6 h-6 rounded-full bg-green-500 flex flex-col items-center justify-center absolute -top-2 -right-2">
-                    <TiTick color="white" size={30} />
+            {participants
+              .sort(
+                (a, b) =>
+                  Number(a.id.replace("p", "")) - Number(b.id.replace("p", ""))
+              )
+              .map((participant) => (
+                <button
+                  key={participant.id}
+                  onClick={() => handleSelectParticipant(participant.id)}
+                  className={`${
+                    selectedParticipant.includes(participant.id)
+                      ? "border-green-600"
+                      : "border-white"
+                  } bg-linear-to-br border from-slate-800 via-slate-900 to-slate-800 relative rounded-2xl shadow-2xl p-6 text-white transition-all duration-200 transform hover:scale-105 active:scale-95`}
+                >
+                  {selectedParticipant.includes(participant.id) && (
+                    <div className="w-6 h-6 rounded-full bg-green-500 flex flex-col items-center justify-center absolute -top-2 -right-2">
+                      <TiTick color="white" size={30} />
+                    </div>
+                  )}
+                  <div className="flex flex-row items-center text-center">
+                    <div
+                      className={`mr-2 rounded-full w-5 h-5 font-bold flex flex-col items-center justify-center ${
+                        selectedParticipant.includes(participant.id)
+                          ? "bg-green-600"
+                          : "bg-white"
+                      } text-black text-sm`}
+                    >
+                      {participant.id.replace("p", "")}
+                    </div>
+                    <p className="text-lg font-medium absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
+                      {participant.name}
+                    </p>
                   </div>
-                )}
-                <div className="flex flex-row items-center text-center">
-                  <div
-                    className={`mr-2 rounded-full w-5 h-5 font-bold flex flex-col items-center justify-center ${
-                      selectedParticipant.includes(participant.id)
-                        ? "bg-green-600"
-                        : "bg-white"
-                    } text-black text-sm`}
-                  >
-                    {participant.id.replace("p", "")}
-                  </div>
-                  <p className="text-lg font-medium absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
-                    {participant.name}
-                  </p>
-                </div>
-              </button>
-            ))}
+                </button>
+              ))}
           </div>
         )}
       </div>
