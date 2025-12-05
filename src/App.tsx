@@ -12,7 +12,7 @@ function App() {
     <FirestoreProvider sdk={firestoreInstance}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="/results" replace />} />
+          <Route path="/" element={<Navigate to="/vote" replace />} />
           <Route path="/results" element={<Results />} />
           <Route path="/vote" element={<Vote />} />
           <Route path="/control" element={<Control />} />

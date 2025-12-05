@@ -69,3 +69,4 @@ To change participant names to real names:
 
 Or bulk edit via Firebase Console's batch operations or use a script if you have many to change.
 
+

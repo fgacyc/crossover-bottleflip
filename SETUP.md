@@ -139,3 +139,4 @@ service cloud.firestore {
 - Voting must be closed to change sessions
 - Results show highest votes at the top
 
+
