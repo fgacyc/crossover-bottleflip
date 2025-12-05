@@ -301,23 +301,23 @@ export default function Control() {
         <div className="bg-slate-800 rounded-2xl p-6 mb-6 shadow-2xl">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-2xl font-bold text-white">Voting Status</h2>
+              <h2 className="text-xl font-bold text-white">Voting Status</h2>
               <p className="text-blue-200">Session {config.currentSession}</p>
             </div>
             <div
-              className={`px-6 py-3 rounded-full font-bold text-lg ${
+              className={`px-4 py-1 rounded-full font-bold text-sm ${
                 config.isOpen
                   ? "bg-green-500 text-white animate-pulse"
                   : "bg-red-500 text-white"
               }`}
             >
-              {config.isOpen ? "🟢 OPEN" : "🔴 CLOSED"}
+              {config.isOpen ? "OPEN" : "CLOSED"}
             </div>
           </div>
 
           <button
             onClick={toggleVoting}
-            className={`w-full py-4 rounded-xl font-bold text-xl transition-all transform hover:scale-105 ${
+            className={`w-full py-2.5 rounded-xl font-bold text-xl transition-all transform hover:scale-105 ${
               config.isOpen
                 ? "bg-red-600 hover:bg-red-700 text-white"
                 : "bg-green-600 hover:bg-green-700 text-white"
@@ -328,17 +328,17 @@ export default function Control() {
         </div>
 
         {/* Session Selection */}
-        <div className="bg-slate-800 rounded-2xl p-6 mb-6 shadow-2xl">
-          <h2 className="text-2xl font-bold text-white mb-4">Select Session</h2>
+        <div className="bg-slate-800 rounded-2xl p-4 mb-4 shadow-2xl">
+          <h2 className="text-lg font-bold text-white mb-2">Select Session</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[1, 2, 3, 4].map((session) => (
               <button
                 key={session}
                 onClick={() => changeSession(session)}
                 disabled={config.isOpen}
-                className={`py-6 rounded-xl font-bold text-2xl transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed ${
+                className={`py-3 rounded-xl font-bold text-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed ${
                   config.currentSession === session
-                    ? "bg-blue-600 text-white ring-4 ring-blue-400"
+                    ? "bg-blue-600 text-white ring-2 ring-blue-400"
                     : "bg-slate-700 hover:bg-slate-600 text-white"
                 }`}
               >
@@ -354,13 +354,13 @@ export default function Control() {
         </div>
 
         {/* Actions */}
-        <div className="bg-slate-800 rounded-2xl p-6 shadow-2xl">
-          <h2 className="text-2xl font-bold text-white mb-4">Actions</h2>
+        <div className="bg-slate-800 rounded-2xl p-4 shadow-2xl">
+          <h2 className="text-lg font-bold text-white mb-2">Actions</h2>
           <div className="space-y-3">
             <button
               onClick={saveAndCloseSession}
               disabled={saving || config.isOpen}
-              className="w-full py-4 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-bold text-lg transition-all transform hover:scale-105"
+              className="w-full py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-bold text-lg transition-all transform hover:scale-105"
             >
               {saving ? "Saving..." : "💾 Save & Close Session"}
             </button>
@@ -368,7 +368,7 @@ export default function Control() {
             <button
               onClick={resetCurrentSession}
               disabled={config.isOpen}
-              className="w-full py-4 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-bold text-lg transition-all transform hover:scale-105"
+              className="w-full py-2 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-bold text-lg transition-all transform hover:scale-105"
             >
               🔄 Reset Current Session Votes
             </button>

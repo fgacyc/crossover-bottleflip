@@ -7,7 +7,6 @@ import {
   where,
   writeBatch,
 } from "firebase/firestore";
-import { getCounterColor, type Cluster } from "../utils";
 import { useEffect, useState } from "react";
 import { TiTick } from "react-icons/ti";
 
@@ -78,13 +77,6 @@ export default function Vote() {
     }
   }, []);
 
-  // Use session number to determine color
-  const counterIds = ["voice", "move", "mind", "heart"] as Cluster[];
-  const getParticipantColor = (session: number) => {
-    const colorIndex = (session - 1) % 4;
-    return getCounterColor(counterIds[colorIndex]);
-  };
-
   if (sessionsVoted.includes(currentSession)) {
     return (
       <div className="min-h-screen bg-linear-to-br from-slate-900 via-blue-950 to-slate-900 p-4 flex flex-col justify-center">
@@ -133,26 +125,38 @@ export default function Vote() {
             Loading participants...
           </div>
         )}
-
         {status === "success" && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {participants.map((participant) => (
               <button
                 key={participant.id}
                 onClick={() => handleSelectParticipant(participant.id)}
-                className={`bg-linear-to-br ${getParticipantColor(
-                  participant.session
-                )} relative rounded-2xl shadow-2xl p-6 text-white transition-all duration-200 transform hover:scale-105 active:scale-95`}
+                className={`${
+                  selectedParticipant.includes(participant.id)
+                    ? "border-green-600"
+                    : "border-white"
+                } bg-linear-to-br border from-slate-800 via-slate-900 to-slate-800 relative rounded-2xl shadow-2xl p-6 text-white transition-all duration-200 transform hover:scale-105 active:scale-95`}
               >
-                {selectedParticipant.includes(participant.id) && (
+                {selectedParticipant
+                  .sort((a, b) => a.localeCompare(b))
+                  .includes(participant.id) && (
                   <div className="w-6 h-6 rounded-full bg-green-500 flex flex-col items-center justify-center absolute -top-2 -right-2">
                     <TiTick color="white" size={30} />
                   </div>
                 )}
-                <div className="text-center">
-                  <h2 className="text-2xl font-bold mb-2">
+                <div className="flex flex-row items-center text-center">
+                  <div
+                    className={`mr-2 rounded-full w-5 h-5 font-bold flex flex-col items-center justify-center ${
+                      selectedParticipant.includes(participant.id)
+                        ? "bg-green-600"
+                        : "bg-white"
+                    } text-black text-sm`}
+                  >
+                    {participant.id.replace("p", "")}
+                  </div>
+                  <p className="text-lg font-medium absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
                     {participant.name}
-                  </h2>
+                  </p>
                 </div>
               </button>
             ))}
@@ -162,7 +166,7 @@ export default function Vote() {
       <button
         onClick={handleVote}
         disabled={selectedParticipant.length === 0}
-        className="w-full py-4 rounded-xl font-bold text-xl transition-all transform hover:scale-105 bg-green-600 hover:bg-green-700 text-white"
+        className="w-full py-4 disabled:opacity-50 disabled:cursor-not-allowed mb-16 rounded-xl font-bold text-xl transition-all transform hover:scale-105 bg-green-600 hover:bg-green-700 text-white"
       >
         {selectedParticipant.length > 0 ? "Vote" : "No participants selected"}
       </button>
