@@ -54,7 +54,7 @@ export default function MainScreen() {
       style={{ fontSize: "16px" }}
     >
       <video
-        src="/bg.mov"
+        src="https://cms.fgacyc.com/uploads/bg_05018047d6.mov"
         autoPlay
         muted
         loop
