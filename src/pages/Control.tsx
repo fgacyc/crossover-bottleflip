@@ -69,7 +69,7 @@ const seedData = [
   {
     id: "p10",
     name: "郑宇胜 Teh Yi Shern",
-    session: 2,
+    session: 3,
     votes: 0,
     cluster: "move",
   },
