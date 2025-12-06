@@ -105,7 +105,7 @@ export default function MainScreen() {
                     <div className="flex-1 relative">
                       <div className="w-full h-20 bg-slate-300/30 rounded-2xl overflow-hidden relative">
                         {/* Animated Bar */}
-                        {displayPercentage > 0 && (
+                        {
                           <div
                             className="h-full rounded-2xl transition-all duration-1000 ease-out flex items-center justify-end px-8"
                             style={{
@@ -114,11 +114,13 @@ export default function MainScreen() {
                               boxShadow: `0 0 30px ${barColor}80`,
                             }}
                           >
-                            <span className="text-5xl font-bold text-white drop-shadow-lg">
-                              {showResults ? participant.votes || 0 : 0}
-                            </span>
+                            {displayPercentage > 0 && (
+                              <span className="text-5xl font-bold text-white drop-shadow-lg">
+                                {showResults ? participant.votes || 0 : 0}
+                              </span>
+                            )}
                           </div>
-                        )}
+                        }
 
                         {/* Vote count - always show on right when results are hidden or bar is small */}
                         {(displayPercentage < 15 || !showResults) && (
