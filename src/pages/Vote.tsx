@@ -13,6 +13,7 @@ import { TiTick } from "react-icons/ti";
 export default function Vote() {
   const [selectedParticipant, setSelectedParticipant] = useState<string[]>([]);
   const [sessionsVoted, setSessionsVoted] = useState<number[]>([]);
+  const [clicked, setClicked] = useState(false);
   const firestore = useFirestore();
 
   // Get voting config
@@ -50,6 +51,8 @@ export default function Vote() {
   };
 
   const handleVote = async () => {
+    setClicked(true);
+    if (clicked) return;
     if (!isOpen) return;
 
     try {
@@ -168,7 +171,7 @@ export default function Vote() {
       </div>
       <button
         onClick={handleVote}
-        disabled={selectedParticipant.length === 0}
+        disabled={selectedParticipant.length === 0 || clicked}
         className="w-full py-4 disabled:opacity-50 disabled:cursor-not-allowed mb-16 rounded-xl font-bold text-xl transition-all transform hover:scale-105 bg-green-600 hover:bg-green-700 text-white"
       >
         {selectedParticipant.length > 0 ? "Vote" : "No participants selected"}

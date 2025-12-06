@@ -33,6 +33,13 @@ export default function Control() {
     });
   };
 
+  const toggleShowResults = async () => {
+    const configDocRef = doc(firestore, "config", configDocId);
+    await updateDoc(configDocRef, {
+      showResults: !config.showResults,
+    });
+  };
+
   const changeSession = async (sessionNumber: number) => {
     const configDocRef = doc(firestore, "config", configDocId);
     await updateDoc(configDocRef, {
@@ -129,6 +136,7 @@ export default function Control() {
       batch.set(configRef, {
         isOpen: false,
         currentSession: 1,
+        showResults: false,
       });
 
       // Create 20 participants (5 per session)
@@ -304,27 +312,51 @@ export default function Control() {
               <h2 className="text-xl font-bold text-white">Voting Status</h2>
               <p className="text-blue-200">Session {config.currentSession}</p>
             </div>
-            <div
-              className={`px-4 py-1 rounded-full font-bold text-sm ${
-                config.isOpen
-                  ? "bg-green-500 text-white animate-pulse"
-                  : "bg-red-500 text-white"
-              }`}
-            >
-              {config.isOpen ? "OPEN" : "CLOSED"}
+            <div className="flex gap-2">
+              <div
+                className={`px-4 py-1 rounded-full font-bold text-sm ${
+                  config.isOpen
+                    ? "bg-green-500 text-white animate-pulse"
+                    : "bg-red-500 text-white"
+                }`}
+              >
+                {config.isOpen ? "OPEN" : "CLOSED"}
+              </div>
+              <div
+                className={`px-4 py-1 rounded-full font-bold text-sm ${
+                  config.showResults
+                    ? "bg-blue-500 text-white animate-pulse"
+                    : "bg-gray-500 text-white"
+                }`}
+              >
+                {config.showResults ? "SHOWING" : "HIDDEN"}
+              </div>
             </div>
           </div>
 
-          <button
-            onClick={toggleVoting}
-            className={`w-full py-2.5 rounded-xl font-bold text-xl transition-all transform hover:scale-105 ${
-              config.isOpen
-                ? "bg-red-600 hover:bg-red-700 text-white"
-                : "bg-green-600 hover:bg-green-700 text-white"
-            }`}
-          >
-            {config.isOpen ? "🔒 Close Voting" : "🔓 Open Voting"}
-          </button>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={toggleVoting}
+              className={`py-2.5 rounded-xl font-bold text-xl transition-all transform hover:scale-105 ${
+                config.isOpen
+                  ? "bg-red-600 hover:bg-red-700 text-white"
+                  : "bg-green-600 hover:bg-green-700 text-white"
+              }`}
+            >
+              {config.isOpen ? "🔒 Close Voting" : "🔓 Open Voting"}
+            </button>
+
+            <button
+              onClick={toggleShowResults}
+              className={`py-2.5 rounded-xl font-bold text-xl transition-all transform hover:scale-105 ${
+                config.showResults
+                  ? "bg-gray-600 hover:bg-gray-700 text-white"
+                  : "bg-blue-600 hover:bg-blue-700 text-white"
+              }`}
+            >
+              {config.showResults ? "🙈 Hide Results" : "📊 Show Results"}
+            </button>
+          </div>
         </div>
 
         {/* Session Selection */}
@@ -396,18 +428,24 @@ export default function Control() {
         </div>
 
         {/* Quick Links */}
-        <div className="mt-6 grid grid-cols-2 gap-4">
+        <div className="mt-6 grid grid-cols-3 gap-4">
           <a
             href="/results"
             className="bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold text-center transition-all transform hover:scale-105"
           >
-            📊 View Results
+            📊 Results
           </a>
           <a
             href="/vote"
             className="bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold text-center transition-all transform hover:scale-105"
           >
-            🗳️ Voting Page
+            🗳️ Vote
+          </a>
+          <a
+            href="/MS"
+            className="bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-xl font-bold text-center transition-all transform hover:scale-105"
+          >
+            📺 Main Screen
           </a>
         </div>
       </div>

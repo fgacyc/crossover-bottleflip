@@ -10,6 +10,7 @@ export interface Participant {
 export interface VotingConfig {
   isOpen: boolean;
   currentSession: number; // 1-4
+  showResults: boolean;
 }
 
 export interface SessionResult {
