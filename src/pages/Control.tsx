@@ -11,10 +11,147 @@ import {
 } from "firebase/firestore";
 import { useState } from "react";
 
+// Create 20 participants (5 per session)
+const seedData = [
+  // Session 1
+  {
+    id: "p1",
+    name: "廖健旭 Liew Jian Xu",
+    session: 1,
+    votes: 0,
+    cluster: "move",
+  },
+  {
+    id: "p2",
+    name: "雙影忍者 Twin Ninjas",
+    session: 1,
+    votes: 0,
+    cluster: "move",
+  },
+  {
+    id: "p3",
+    name: "安骏赫 An Jun He",
+    session: 1,
+    votes: 0,
+    cluster: "mind",
+  },
+  {
+    id: "p4",
+    name: "廖崇善 Leo Chong Shan",
+    session: 1,
+    votes: 0,
+    cluster: "heart",
+  },
+  { id: "p5", name: "Cycle", session: 1, votes: 0, cluster: "move" },
+  // Session 2
+  { id: "p6", name: "2500", session: 2, votes: 0, cluster: "move" },
+  {
+    id: "p7",
+    name: "杨景耀 Ken Yao",
+    session: 2,
+    votes: 0,
+    cluster: "heart",
+  },
+  {
+    id: "p8",
+    name: "梁媛芝 Leong Yune Zi",
+    session: 2,
+    votes: 0,
+    cluster: "voice",
+  },
+  {
+    id: "p9",
+    name: "龙洵涛 Loong Xun Tao",
+    session: 2,
+    votes: 0,
+    cluster: "mind",
+  },
+  {
+    id: "p10",
+    name: "郑宇胜 Teh Yi Shern",
+    session: 2,
+    votes: 0,
+    cluster: "move",
+  },
+  // Session 3
+  {
+    id: "p11",
+    name: "罗一杰 Low Ee Jay",
+    session: 3,
+    votes: 0,
+    cluster: "mind",
+  },
+  {
+    id: "p12",
+    name: "黄子辰 Wee Zee Chen",
+    session: 3,
+    votes: 0,
+    cluster: "voice",
+  },
+  {
+    id: "p13",
+    name: "Eternity Girl",
+    session: 3,
+    votes: 0,
+    cluster: "mind",
+  },
+  {
+    id: "p14",
+    name: "4VE",
+    session: 3,
+    votes: 0,
+    cluster: "heart,voice",
+  },
+  {
+    id: "p15",
+    name: "卢怡萱 Goh Yi Xuan",
+    session: 3,
+    votes: 0,
+    cluster: "move",
+  },
+  // Session 4
+  {
+    id: "p16",
+    name: "VO-ICE 这甜蜜大家庭",
+    session: 4,
+    votes: 0,
+    cluster: "voice",
+  },
+  {
+    id: "p17",
+    name: "官喬㜯 Princella Gisselle Kuan",
+    session: 4,
+    votes: 0,
+    cluster: "heart",
+  },
+  {
+    id: "p18",
+    name: "Eliya Shoong Ning 宋宁",
+    session: 4,
+    votes: 0,
+    cluster: "move",
+  },
+  {
+    id: "p19",
+    name: "破界同心战队",
+    session: 4,
+    votes: 0,
+    cluster: "heart,move",
+  },
+  {
+    id: "p20",
+    name: "Tan Jia Inn",
+    session: 4,
+    votes: 0,
+    cluster: "move",
+  },
+];
+
 export default function Control() {
   const firestore = useFirestore();
   const [saving, setSaving] = useState(false);
   const [seeding, setSeeding] = useState(false);
+  const [cleaning, setCleaning] = useState(false);
 
   // Get voting config
   const configRef = collection(firestore, "config");
@@ -118,6 +255,65 @@ export default function Control() {
     }
   };
 
+  const cleanAndSeedDatabase = async () => {
+    if (
+      !confirm(
+        "⚠️ DESTRUCTIVE ACTION ⚠️\n\nThis will:\n1. DELETE all participants\n2. DELETE all saved sessions\n3. Create fresh seed data\n\nThis cannot be undone. Continue?"
+      )
+    ) {
+      return;
+    }
+
+    setCleaning(true);
+    try {
+      // Step 1: Delete all participants
+      const participantsSnapshot = await getDocs(
+        collection(firestore, "participants")
+      );
+      const deleteBatch1 = writeBatch(firestore);
+      participantsSnapshot.docs.forEach((doc) => deleteBatch1.delete(doc.ref));
+      await deleteBatch1.commit();
+
+      // Step 2: Delete all sessions
+      const sessionsSnapshot = await getDocs(collection(firestore, "sessions"));
+      const deleteBatch2 = writeBatch(firestore);
+      sessionsSnapshot.docs.forEach((doc) => deleteBatch2.delete(doc.ref));
+      await deleteBatch2.commit();
+
+      // Step 3: Seed fresh data
+      const batch = writeBatch(firestore);
+
+      // Create config document
+      const configRef = doc(firestore, "config", "voting");
+      batch.set(configRef, {
+        isOpen: false,
+        currentSession: 1,
+        showResults: false,
+      });
+
+      seedData.forEach((participant) => {
+        const participantRef = doc(firestore, "participants", participant.id);
+        batch.set(participantRef, {
+          name: participant.name,
+          session: participant.session,
+          votes: participant.votes,
+          cluster: participant.cluster,
+        });
+      });
+
+      await batch.commit();
+
+      alert(
+        "Database cleaned and seeded successfully! ✅\n\n- All old data deleted\n- Config created\n- 20 participants created"
+      );
+    } catch (error) {
+      console.error("Error cleaning and seeding database:", error);
+      alert("Failed to clean and seed database. Check console for errors.");
+    } finally {
+      setCleaning(false);
+    }
+  };
+
   const seedDatabase = async () => {
     if (
       !confirm(
@@ -139,143 +335,7 @@ export default function Control() {
         showResults: false,
       });
 
-      // Create 20 participants (5 per session)
-      const participants = [
-        // Session 1
-        {
-          id: "p1",
-          name: "廖健旭 Liew Jian Xu",
-          session: 1,
-          votes: 0,
-          cluster: "move",
-        },
-        {
-          id: "p2",
-          name: "雙影忍者 Twin Ninjas",
-          session: 1,
-          votes: 0,
-          cluster: "move",
-        },
-        {
-          id: "p3",
-          name: "安骏赫 An Jun He",
-          session: 1,
-          votes: 0,
-          cluster: "mind",
-        },
-        {
-          id: "p4",
-          name: "廖崇善 Leo Chong Shan",
-          session: 1,
-          votes: 0,
-          cluster: "heart",
-        },
-        { id: "p5", name: "Cycle", session: 1, votes: 0, cluster: "move" },
-        // Session 2
-        { id: "p6", name: "2500", session: 2, votes: 0, cluster: "move" },
-        {
-          id: "p7",
-          name: "杨景耀 Ken Yao",
-          session: 2,
-          votes: 0,
-          cluster: "heart",
-        },
-        {
-          id: "p8",
-          name: "梁媛芝 Leong Yune Zi",
-          session: 2,
-          votes: 0,
-          cluster: "voice",
-        },
-        {
-          id: "p9",
-          name: "龙洵涛 Loong Xun Tao",
-          session: 2,
-          votes: 0,
-          cluster: "mind",
-        },
-        {
-          id: "p10",
-          name: "郑宇胜 Teh Yi Shern",
-          session: 2,
-          votes: 0,
-          cluster: "move",
-        },
-        // Session 3
-        {
-          id: "p11",
-          name: "罗一杰 Low Ee Jay",
-          session: 3,
-          votes: 0,
-          cluster: "mind",
-        },
-        {
-          id: "p12",
-          name: "黄子辰 Wee Zee Chen",
-          session: 3,
-          votes: 0,
-          cluster: "voice",
-        },
-        {
-          id: "p13",
-          name: "Eternity Girl",
-          session: 3,
-          votes: 0,
-          cluster: "mind",
-        },
-        {
-          id: "p14",
-          name: "4VE",
-          session: 3,
-          votes: 0,
-          cluster: "heart,voice",
-        },
-        {
-          id: "p15",
-          name: "卢怡萱 Goh Yi Xuan",
-          session: 3,
-          votes: 0,
-          cluster: "move",
-        },
-        // Session 4
-        {
-          id: "p16",
-          name: "VO-ICE 这甜蜜大家庭",
-          session: 4,
-          votes: 0,
-          cluster: "voice",
-        },
-        {
-          id: "p17",
-          name: "官喬㜯 Princella Gisselle Kuan",
-          session: 4,
-          votes: 0,
-          cluster: "heart",
-        },
-        {
-          id: "p18",
-          name: "Eliya Shoong Ning 宋宁",
-          session: 4,
-          votes: 0,
-          cluster: "move",
-        },
-        {
-          id: "p19",
-          name: "破界同心战队",
-          session: 4,
-          votes: 0,
-          cluster: "heart,move",
-        },
-        {
-          id: "p20",
-          name: "Tan Jia Inn",
-          session: 4,
-          votes: 0,
-          cluster: "move",
-        },
-      ];
-
-      participants.forEach((participant) => {
+      seedData.forEach((participant) => {
         const participantRef = doc(firestore, "participants", participant.id);
         batch.set(participantRef, {
           name: participant.name,
@@ -413,18 +473,36 @@ export default function Control() {
           <p className="text-sm text-yellow-200 mb-4">
             ⚠️ Use this to initialize the database on first setup
           </p>
-          <button
-            onClick={seedDatabase}
-            disabled={seeding}
-            className="w-full py-4 bg-yellow-600 hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-bold text-lg transition-all transform hover:scale-105"
-          >
-            {seeding
-              ? "Seeding Database..."
-              : "🌱 Seed Database (Create Initial Data)"}
-          </button>
-          <p className="text-xs text-gray-400 mt-2">
-            Creates config document and 20 participants (5 per session)
-          </p>
+
+          <div className="space-y-3">
+            <button
+              onClick={seedDatabase}
+              disabled={seeding || cleaning}
+              className="w-full py-4 bg-yellow-600 hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-bold text-lg transition-all transform hover:scale-105"
+            >
+              {seeding
+                ? "Seeding Database..."
+                : "🌱 Seed Database (Update/Create)"}
+            </button>
+            <p className="text-xs text-gray-400">
+              Updates existing participants or creates new ones. Does not delete
+              old data.
+            </p>
+
+            <button
+              onClick={cleanAndSeedDatabase}
+              disabled={seeding || cleaning}
+              className="w-full py-4 bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-bold text-lg transition-all transform hover:scale-105"
+            >
+              {cleaning
+                ? "Cleaning & Seeding..."
+                : "🗑️ Clean & Seed (Delete All First)"}
+            </button>
+            <p className="text-xs text-red-300">
+              ⚠️ DESTRUCTIVE: Deletes all participants and sessions, then
+              creates fresh data.
+            </p>
+          </div>
         </div>
 
         {/* Quick Links */}
