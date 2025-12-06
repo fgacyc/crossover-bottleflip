@@ -160,7 +160,7 @@ export default function Vote() {
                     >
                       {participant.id.replace("p", "")}
                     </div>
-                    <p className="text-lg font-medium absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
+                    <p className="text-lg font-medium absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-full">
                       {participant.name}
                     </p>
                   </div>

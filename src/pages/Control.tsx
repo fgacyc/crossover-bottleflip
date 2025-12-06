@@ -126,7 +126,7 @@ const seedData = [
   },
   {
     id: "p18",
-    name: "Eliya Shoong Ning 宋宁",
+    name: "宋宁 Eliya Shoong Ning",
     session: 4,
     votes: 0,
     cluster: "move",
