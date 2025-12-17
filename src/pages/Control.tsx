@@ -364,7 +364,7 @@ export default function Control() {
                   : "bg-green-600 hover:bg-green-700 text-white"
               }`}
             >
-              {config.isOpen ? "🔒 Close Voting" : "🔓 Open Voting"}
+              {config.isOpen ? "Close Voting" : "Open Voting"}
             </button>
 
             <button
@@ -375,7 +375,7 @@ export default function Control() {
                   : "bg-blue-600 hover:bg-blue-700 text-white"
               }`}
             >
-              {config.showResults ? "🙈 Hide Results" : "📊 Show Results"}
+              {config.showResults ? "Hide Results" : "Show Results"}
             </button>
           </div>
         </div>
@@ -423,7 +423,7 @@ export default function Control() {
               disabled={config.isOpen}
               className="w-full py-2 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-bold text-lg transition-all transform hover:scale-105"
             >
-              🔄 Reset Current Session Votes
+              Reset Current Session Votes
             </button>
           </div>
         </div>
@@ -467,26 +467,6 @@ export default function Control() {
         </div>
 
         {/* Quick Links */}
-        <div className="mt-6 grid grid-cols-3 gap-4">
-          <a
-            href="/results"
-            className="bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold text-center transition-all transform hover:scale-105"
-          >
-            📊 Results
-          </a>
-          <a
-            href="/vote"
-            className="bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold text-center transition-all transform hover:scale-105"
-          >
-            🗳️ Vote
-          </a>
-          <a
-            href="/MS"
-            className="bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-xl font-bold text-center transition-all transform hover:scale-105"
-          >
-            📺 Main Screen
-          </a>
-        </div>
       </div>
     </div>
   );
