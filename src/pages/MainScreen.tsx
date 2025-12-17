@@ -50,7 +50,7 @@ export default function MainScreen() {
 
   return (
     <div
-      className="w-[2432px] h-[1024px] flex flex-col justify-center p-12 overflow-hidden"
+      className="w-[4000px] h-[1000px] flex flex-col justify-center p-12 overflow-hidden"
       style={{ fontSize: "16px" }}
     >
       <video

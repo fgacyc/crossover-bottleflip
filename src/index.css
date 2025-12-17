@@ -14,3 +14,8 @@
     }
   }
 }
+
+#root {
+  min-height: 100dvh;
+  background-color: #0b1c2d;
+}
