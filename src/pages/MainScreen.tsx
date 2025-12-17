@@ -62,9 +62,6 @@ export default function MainScreen() {
       />
       <div className="relative z-10 bg-black/50 backdrop-blur-sm p-6 rounded-2xl">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-8xl font-bold text-white mb-4">Results</h1>
-        </div>
 
         {status === "loading" && (
           <div className="text-white text-center text-6xl mt-32">
