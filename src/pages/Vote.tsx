@@ -9,6 +9,8 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { TiTick } from "react-icons/ti";
+import { getCounterColor, type CounterId } from "../utils";
+import { BsFillSendCheckFill } from "react-icons/bs";
 
 export default function Vote() {
   const [selectedParticipant, setSelectedParticipant] = useState<string[]>([]);
@@ -112,7 +114,7 @@ export default function Vote() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-blue-950 to-slate-900 p-4 flex flex-col justify-between">
+    <div className="min-h-screen gap-5 bg-linear-to-br from-slate-900 via-blue-950 to-slate-900 p-4 flex flex-col justify-between">
       <div className="w-full mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-2">
@@ -129,30 +131,47 @@ export default function Vote() {
           </div>
         )}
         {status === "success" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-6">
             {participants
               .sort(
                 (a, b) =>
                   Number(a.id.replace("p", "")) - Number(b.id.replace("p", ""))
               )
               .map((participant) => (
-                <button
+                <div
                   key={participant.id}
                   onClick={() => handleSelectParticipant(participant.id)}
                   className={`${
                     selectedParticipant.includes(participant.id)
                       ? "border-green-600"
                       : "border-white"
-                  } bg-linear-to-br border from-slate-800 via-slate-900 to-slate-800 relative rounded-2xl shadow-2xl p-6 text-white transition-all duration-200 transform hover:scale-105 active:scale-95`}
+                  } from-slate-800 via-slate-900 to-slate-800 bg-linear-to-br border bg-opacity-70 relative rounded-2xl shadow-2xl p-2.5 flex flex-col items-center justify-center text-white transition-all duration-200 transform hover:scale-105 active:scale-95`}
                 >
+                  <div className="flex flex-row items-center gap-1.5 absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2">
+                    {participant.cluster
+                      .split(",")
+                      .map((cluster: CounterId) => (
+                        <div
+                          key={cluster}
+                          className={`${getCounterColor(cluster)} ${
+                            selectedParticipant.includes(participant.id)
+                              ? "border-green-600"
+                              : "border-white"
+                          } rounded-full border bg-linear-to-br px-2 text-xs`}
+                        >
+                          {cluster}
+                        </div>
+                      ))}
+                  </div>
                   {selectedParticipant.includes(participant.id) && (
                     <div className="w-6 h-6 rounded-full bg-green-500 flex flex-col items-center justify-center absolute -top-2 -right-2">
                       <TiTick color="white" size={30} />
                     </div>
                   )}
-                  <div className="flex flex-row items-center text-center">
+
+                  <div className="flex absolute top-2 left-2 flex-row items-center justify-center text-center">
                     <div
-                      className={`mr-2 rounded-full w-5 h-5 font-bold flex flex-col items-center justify-center ${
+                      className={`rounded-full w-5 h-5 font-bold flex flex-col items-center justify-center ${
                         selectedParticipant.includes(participant.id)
                           ? "bg-green-600"
                           : "bg-white"
@@ -160,11 +179,20 @@ export default function Vote() {
                     >
                       {participant.id.replace("p", "")}
                     </div>
-                    <p className="text-lg font-medium absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-full">
-                      {participant.name}
-                    </p>
                   </div>
-                </button>
+                  <div className="flex flex-col items-center gap-1.5 justify-center">
+                    <img
+                      src={`/img/${participant.name.replaceAll(" ", "_")}.PNG`}
+                      alt={participant.name}
+                      className="w-[125px] h-[125px] object-cover rounded-full"
+                    />
+                    <div className="flex flex-row items-center justify-center">
+                      <p className="text-sm font-medium text-center">
+                        {participant.name}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               ))}
           </div>
         )}
@@ -172,9 +200,9 @@ export default function Vote() {
       <button
         onClick={handleVote}
         disabled={selectedParticipant.length === 0 || clicked}
-        className="w-full py-4 disabled:opacity-50 disabled:cursor-not-allowed mb-16 rounded-xl font-bold text-xl transition-all transform hover:scale-105 bg-green-600 hover:bg-green-700 text-white"
+        className="rounded-full disabled:opacity-50 disabled:cursor-not-allowed w-[60px] h-[60px] flex flex-col items-center justify-center fixed bottom-[calc(env(safe-area-inset-bottom)+28px)] right-7 font-bold text-xl transition-all transform hover:scale-105 bg-green-600 hover:bg-green-700 text-white"
       >
-        {selectedParticipant.length > 0 ? "Vote" : "No participants selected"}
+        <BsFillSendCheckFill size={20} className="text-white" />
       </button>
     </div>
   );

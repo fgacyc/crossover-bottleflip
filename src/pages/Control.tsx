@@ -16,134 +16,95 @@ const seedData = [
   // Session 1
   {
     id: "p1",
-    name: "廖健旭 Liew Jian Xu",
+    name: "VO-ICE 这甜蜜大家庭",
     session: 1,
     votes: 0,
-    cluster: "move",
+    cluster: "voice",
   },
   {
     id: "p2",
-    name: "雙影忍者 Twin Ninjas",
+    name: "Tan Jia Inn",
     session: 1,
     votes: 0,
     cluster: "move",
   },
   {
     id: "p3",
-    name: "安骏赫 An Jun He",
+    name: "宋宁 Eliya Shoong Ning",
     session: 1,
     votes: 0,
-    cluster: "mind",
+    cluster: "move",
   },
   {
     id: "p4",
-    name: "廖崇善 Leo Chong Shan",
-    session: 1,
-    votes: 0,
-    cluster: "heart",
-  },
-  { id: "p5", name: "Cycle", session: 1, votes: 0, cluster: "move" },
-  // Session 2
-  { id: "p6", name: "2500", session: 2, votes: 0, cluster: "move" },
-  {
-    id: "p7",
-    name: "杨景耀 Ken Yao",
-    session: 2,
-    votes: 0,
-    cluster: "heart",
-  },
-  {
-    id: "p8",
     name: "梁媛芝 Leong Yune Zi",
-    session: 2,
+    session: 1,
     votes: 0,
     cluster: "voice",
   },
   {
+    id: "p5",
+    name: "卢怡萱 Goh Yi Xuan",
+    session: 1,
+    votes: 0,
+    cluster: "move",
+  },
+  {
+    id: "p6",
+    name: "官喬㜯 Princella Gisselle Kuan",
+    session: 1,
+    votes: 0,
+    cluster: "heart",
+  },
+  {
+    id: "p7",
+    name: "罗一杰 Low Ee Jay",
+    session: 1,
+    votes: 0,
+    cluster: "mind",
+  },
+  // Session 2
+  {
+    id: "p8",
+    name: "郑宇胜 Teh Yi Shern",
+    session: 2,
+    votes: 0,
+    cluster: "move",
+  },
+  {
     id: "p9",
-    name: "龙洵涛 Loong Xun Tao",
+    name: "Cycle",
+    session: 2,
+    votes: 0,
+    cluster: "move",
+  },
+  {
+    id: "p10",
+    name: "Eternity Girl",
     session: 2,
     votes: 0,
     cluster: "mind",
   },
   {
-    id: "p10",
-    name: "郑宇胜 Teh Yi Shern",
-    session: 3,
+    id: "p11",
+    name: "雙影忍者 Twin Ninjas",
+    session: 2,
     votes: 0,
     cluster: "move",
-  },
-  // Session 3
-  {
-    id: "p11",
-    name: "罗一杰 Low Ee Jay",
-    session: 3,
-    votes: 0,
-    cluster: "mind",
   },
   {
     id: "p12",
     name: "黄子辰 Wee Zee Chen",
-    session: 3,
+    session: 2,
     votes: 0,
     cluster: "voice",
   },
   {
     id: "p13",
-    name: "Eternity Girl",
-    session: 3,
-    votes: 0,
-    cluster: "mind",
-  },
-  {
-    id: "p14",
     name: "4VE",
-    session: 3,
+    session: 2,
     votes: 0,
     cluster: "heart,voice",
-  },
-  {
-    id: "p15",
-    name: "卢怡萱 Goh Yi Xuan",
-    session: 3,
-    votes: 0,
-    cluster: "move",
-  },
-  // Session 4
-  {
-    id: "p16",
-    name: "VO-ICE 这甜蜜大家庭",
-    session: 4,
-    votes: 0,
-    cluster: "voice",
-  },
-  {
-    id: "p17",
-    name: "官喬㜯 Princella Gisselle Kuan",
-    session: 4,
-    votes: 0,
-    cluster: "heart",
-  },
-  {
-    id: "p18",
-    name: "宋宁 Eliya Shoong Ning",
-    session: 4,
-    votes: 0,
-    cluster: "move",
-  },
-  {
-    id: "p19",
-    name: "破界同心战队",
-    session: 4,
-    votes: 0,
-    cluster: "heart,move",
-  },
-  {
-    id: "p20",
-    name: "Tan Jia Inn",
-    session: 4,
-    votes: 0,
-    cluster: "move",
   },
 ];
 
@@ -422,8 +383,8 @@ export default function Control() {
         {/* Session Selection */}
         <div className="bg-slate-800 rounded-2xl p-4 mb-4 shadow-2xl">
           <h2 className="text-lg font-bold text-white mb-2">Select Session</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map((session) => (
+          <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
+            {[1, 2].map((session) => (
               <button
                 key={session}
                 onClick={() => changeSession(session)}
