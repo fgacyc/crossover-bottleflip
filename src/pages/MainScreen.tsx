@@ -54,13 +54,13 @@ export default function MainScreen() {
       style={{ fontSize: "16px" }}
     >
       <video
-        src="https://cms.fgacyc.com/uploads/bg_05018047d6.mov"
+        src="https://cms.fgacyc.com/uploads/L5_BG_e257e57b1a.mov"
         autoPlay
         muted
         loop
         className="absolute top-0 left-0 w-full h-full object-cover"
       />
-      <div className="relative z-10 bg-black/50 backdrop-blur-sm p-6 rounded-2xl">
+      <div className="relative z-10 bg-black/50 backdrop-blur-sm p-6 rounded-2xl max-w-[1600px] mx-auto w-full">
         {/* Header */}
 
         {status === "loading" && (
