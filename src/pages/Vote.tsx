@@ -66,7 +66,7 @@ export default function Vote() {
       await batch.commit();
       alert("Vote successful!");
       setSessionsVoted([...sessionsVoted, currentSession]);
-      localStorage.setItem("voted", currentSession);
+      localStorage.setItem("voted-2", currentSession);
     } catch (error) {
       console.error("Error voting:", error);
       alert("Error voting: " + error);
@@ -76,7 +76,7 @@ export default function Vote() {
   };
 
   useEffect(() => {
-    const votedSessions = localStorage.getItem("voted");
+    const votedSessions = localStorage.getItem("voted-2");
     if (votedSessions) {
       setSessionsVoted(votedSessions.split(",").map(Number));
     }
